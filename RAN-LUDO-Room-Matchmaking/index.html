@@ -1,0 +1,685 @@
+a<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAN LUDO</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- AUTH -->
+<section id="authPage" class="page active">
+  <div class="auth-card">
+    <img src="logo.jpg" class="logo" alt="RAN LUDO">
+    <p class="tagline">Play • Connect • Enjoy</p>
+
+    <div class="tabs">
+      <button id="loginTab" class="tab active">Login</button>
+      <button id="signupTab" class="tab">Create Account</button>
+    </div>
+
+    <form id="loginForm">
+      <input id="loginEmail" type="email" placeholder="Email" required>
+      <input id="loginPassword" type="password" placeholder="Password" required>
+      <button class="primary" type="submit">LOGIN</button>
+    </form>
+
+    <form id="signupForm" class="hidden">
+      <input id="signupName" type="text" placeholder="Full Name" required>
+      <input id="signupEmail" type="email" placeholder="Email" required>
+      <input id="signupPassword" type="password" placeholder="Password (6+ characters)" minlength="6" required>
+      <button class="primary" type="submit">CREATE ACCOUNT</button>
+    </form>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboardPage" class="page app-page">
+  <header class="topbar">
+    <div class="brand">
+      <img src="logo.jpg" alt="RAN LUDO">
+      <span>RAN LUDO</span>
+    </div>
+    <div class="top-actions"><button id="menuBtn" class="menu-btn" aria-label="Open menu">⋮</button><button id="logoutBtn" class="outline">Logout</button></div>
+  </header>
+
+  <main>
+    <div class="welcome">
+      <h1>Welcome, <span id="userName">Player</span> 👋</h1>
+      <p>Your gaming dashboard</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span>Today's Points</span><strong id="todayPoints">0</strong></div>
+      <div class="stat"><span>7 Days Points</span><strong id="weekPoints">0</strong></div>
+      <div class="stat"><span>Monthly Points</span><strong id="monthPoints">0</strong></div>
+      <div class="stat"><span>Total Points</span><strong id="totalPoints">0</strong></div>
+    </div>
+
+    <div class="play-banner">
+      <div>
+        <h2>Ready to Play?</h2>
+        <p>Create a room or join your friend's room.</p>
+      </div>
+      <button id="playNowBtn" class="play-btn">🎮 PLAY NOW</button>
+    </div>
+  </main>
+</section>
+
+<!-- DASHBOARD MENU -->
+<div id="menuOverlay" class="menu-overlay hidden">
+  <div class="menu-panel">
+    <div class="menu-header">
+      <div><span class="small">RAN LUDO</span><h2>Menu</h2></div>
+      <button id="closeMenuBtn" class="close-btn">×</button>
+    </div>
+    <button class="menu-item" data-menu="profile"><span>👤</span><div><b>Profile</b><small>View your account</small></div><strong>›</strong></button>
+    <button class="menu-item" data-menu="settings"><span>⚙️</span><div><b>Settings</b><small>Game preferences</small></div><strong>›</strong></button>
+    <button class="menu-item" data-menu="help"><span>❓</span><div><b>Help & Support</b><small>How to play & FAQs</small></div><strong>›</strong></button>
+    <button class="menu-item" data-menu="referral"><span>🎁</span><div><b>Refer & Earn</b><small>Share RAN LUDO with friends</small></div><strong>›</strong></button>
+    <button class="menu-item" data-menu="about"><span>ℹ️</span><div><b>About RAN LUDO</b><small>Version & information</small></div><strong>›</strong></button>
+  </div>
+</div>
+
+<div id="infoModal" class="info-modal hidden">
+  <div class="info-card">
+    <button id="closeInfoBtn" class="close-btn">×</button>
+    <div id="infoContent"></div>
+  </div>
+</div>
+
+<!-- ROOM PAGE -->
+<section id="roomPage" class="page app-page">
+  <header class="topbar">
+    <div class="brand">
+      <img src="logo.jpg" alt="RAN LUDO">
+      <span>RAN LUDO</span>
+    </div>
+    <button id="roomLogoutBtn" class="outline">Logout</button>
+  </header>
+
+  <main>
+    <button id="backBtn" class="back">← Dashboard</button>
+    <div class="room-heading">
+      <h1>Play Ludo</h1>
+      <p>Create a room or join using a 6-digit room code.</p>
+    </div>
+
+    <div class="room-grid">
+      <div class="room-card">
+        <div class="room-icon">🏠</div>
+        <h2>Create Room</h2>
+        <p>Generate a private room code and share it with your friends.</p>
+        <button id="createRoomBtn" class="primary">CREATE ROOM</button>
+      </div>
+
+      <div class="room-card">
+        <div class="room-icon">🔗</div>
+        <h2>Join Room</h2>
+        <p>Enter a 6-digit code and join the room instantly.</p>
+        <input id="roomCodeInput" inputmode="numeric" maxlength="6" placeholder="Enter Room Code">
+        <button id="joinRoomBtn" class="primary">JOIN ROOM</button>
+      </div>
+
+      <div class="room-card public-card">
+        <div class="room-icon">🌐</div>
+        <h2>Quick Play</h2>
+        <p>Join an available public room automatically. No room code needed.</p>
+        <button id="quickPlayBtn" class="primary">QUICK PLAY</button>
+      </div>
+    </div>
+
+    <div id="lobby" class="lobby hidden">
+      <div class="lobby-head">
+        <div>
+          <p class="small">ROOM CODE</p>
+          <h2 id="lobbyCode">------</h2>
+        </div>
+        <button id="copyCodeBtn" class="outline">Copy Code</button>
+      </div>
+
+      <div class="lobby-status"><p id="hostText" class="host-text"></p><span id="playerCountBadge" class="player-count-badge">0/4 PLAYERS</span></div>
+      <div id="playersList" class="players"></div>
+
+      <div class="lobby-actions">
+        <button id="startGameBtn" class="primary">START GAME · 2–4 PLAYERS</button>
+        <button id="leaveRoomBtn" class="danger">LEAVE ROOM</button>
+      </div>
+
+      <p class="demo-note">👥 2–4 players can join. The host can start as soon as 2 players are ready.</p>
+    </div>
+
+    <div id="game" class="game hidden">
+      <div class="game-top"><div><p class="small">ROOM</p><h2 id="gameRoomCode">------</h2></div><div class="turn-box"><span id="turnName">Waiting…</span><strong id="diceResult">🎲</strong></div></div>
+      <div class="game-layout"><div class="board-wrap"><div id="board" class="board"></div></div><aside class="game-side"><div class="game-card"><h3>Players</h3><div id="gamePlayers" class="game-players"></div></div><div class="game-card controls"><button id="rollDiceBtn" class="primary">🎲 ROLL DICE</button><p id="gameMessage">Roll the dice to start.</p><button id="exitGameBtn" class="outline">EXIT GAME</button></div></aside></div>
+    </div>
+  </main>
+</section>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, signInAnonymously,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    updateProfile, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
+    collection, onSnapshot, serverTimestamp, runTransaction, getDocs, query, where, limit
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCaPCsCxMkjqpKUpPuurxOcWLxaX8-3aQQ",
+    authDomain: "ran-ludo-eb86d.firebaseapp.com",
+    projectId: "ran-ludo-eb86d",
+    storageBucket: "ran-ludo-eb86d.firebasestorage.app",
+    messagingSenderId: "892747768443",
+    appId: "1:892747768443:web:d1b53885996b0c27c078de",
+    measurementId: "G-WQRLCXS4LB"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const $ = id => document.getElementById(id);
+  let currentUser = null;
+  let currentRoomCode = null;
+  let unsubscribePlayers = null;
+  let unsubscribeRoom = null;
+  let gameState = null;
+  let gamePlayers = [];
+  let pendingMoveTimer = null;
+
+  const COLORS = ["red","green","yellow","blue"];
+  const STARTS = [0,13,26,39];
+  const SAFE = new Set([0,8,13,21,26,34,39,47]);
+  const PATH = [[6,1],[6,2],[6,3],[6,4],[6,5],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,7],[0,8],[1,8],[2,8],[3,8],[4,8],[5,8],[6,9],[6,10],[6,11],[6,12],[6,13],[6,14],[7,14],[8,14],[8,13],[8,12],[8,11],[8,10],[8,9],[9,8],[10,8],[11,8],[12,8],[13,8],[14,8],[14,7],[14,6],[13,6],[12,6],[11,6],[10,6],[9,6],[8,5],[8,4],[8,3],[8,2],[8,1],[8,0],[7,0],[6,0]];
+
+  function showPage(id) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    $(id).classList.add("active");
+  }
+
+  function toast(message) {
+    const t = $("toast");
+    t.textContent = message;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2600);
+  }
+
+  function setAuthTab(login) {
+    $("loginForm").classList.toggle("hidden", !login);
+    $("signupForm").classList.toggle("hidden", login);
+    $("loginTab").classList.toggle("active", login);
+    $("signupTab").classList.toggle("active", !login);
+  }
+
+  $("loginTab").onclick = () => setAuthTab(true);
+  $("signupTab").onclick = () => setAuthTab(false);
+
+  $("signupForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    try {
+      const name = $("signupName").value.trim();
+      const email = $("signupEmail").value.trim();
+      const password = $("signupPassword").value;
+
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: name });
+
+      await setDoc(doc(db, "users", cred.user.uid), {
+        name, email,
+        today: 0, week: 0, month: 0, total: 0,
+        createdAt: serverTimestamp()
+      });
+
+      toast("Account created successfully!");
+      $("signupForm").reset();
+    } catch (err) {
+      toast(firebaseError(err));
+    }
+  });
+
+  $("loginForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        $("loginEmail").value.trim(),
+        $("loginPassword").value
+      );
+      $("loginForm").reset();
+    } catch (err) {
+      toast(firebaseError(err));
+    }
+  });
+
+  async function ensureAnonymousAuth() {
+    if (!auth.currentUser) {
+      await signInAnonymously(auth);
+    }
+  }
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      showPage("authPage");
+      return;
+    }
+
+    currentUser = user;
+
+    // Anonymous users are used only if the project is opened without login.
+    // Normal accounts are handled by email/password above.
+    if (user.isAnonymous) {
+      await ensureProfile(user);
+    }
+
+    await loadDashboard();
+    showPage("dashboardPage");
+  });
+
+  async function ensureProfile(user) {
+    const ref = doc(db, "users", user.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
+      await setDoc(ref, {
+        name: "Guest",
+        email: "",
+        today: 0, week: 0, month: 0, total: 0,
+        createdAt: serverTimestamp()
+      });
+    }
+  }
+
+  async function loadDashboard() {
+    if (!currentUser) return;
+    const snap = await getDoc(doc(db, "users", currentUser.uid));
+    const d = snap.exists() ? snap.data() : {};
+
+    $("userName").textContent = currentUser.displayName || d.name || "Player";
+    $("todayPoints").textContent = d.today ?? 0;
+    $("weekPoints").textContent = d.week ?? 0;
+    $("monthPoints").textContent = d.month ?? 0;
+    $("totalPoints").textContent = d.total ?? 0;
+  }
+
+  $("playNowBtn").onclick = () => showPage("roomPage");
+  $("backBtn").onclick = leaveRoomAndBack;
+  $("logoutBtn").onclick = logout;
+  $("roomLogoutBtn").onclick = logout;
+
+  async function logout() {
+    await leaveCurrentRoom();
+    await signOut(auth);
+    showPage("authPage");
+  }
+
+  function generateCode() {
+    return String(Math.floor(100000 + Math.random() * 900000));
+  }
+
+  async function createRoom() {
+    try {
+      await ensureAnonymousAuthIfNeeded();
+
+      let code;
+      let ref;
+      let exists = true;
+
+      while (exists) {
+        code = generateCode();
+        ref = doc(db, "rooms", code);
+        exists = (await getDoc(ref)).exists();
+      }
+
+      const name = currentUser.displayName || "Player";
+
+      await setDoc(ref, {
+        code,
+        hostUid: currentUser.uid,
+        hostName: name,
+        status: "waiting",
+        visibility: "private",
+        playerCount: 1,
+        createdAt: serverTimestamp()
+      });
+
+      await setDoc(doc(db, "rooms", code, "players", currentUser.uid), {
+        uid: currentUser.uid,
+        name,
+        joinedAt: serverTimestamp()
+      });
+
+      openLobby(code);
+      toast("Room created!");
+    } catch (err) {
+      toast(firebaseError(err));
+    }
+  }
+
+  async function ensureAnonymousAuthIfNeeded() {
+    // Email/password users already have a Firebase auth session.
+    if (!auth.currentUser) await signInAnonymously(auth);
+  }
+
+  $("createRoomBtn").onclick = createRoom;
+
+  async function joinRoom() {
+    const code = $("roomCodeInput").value.trim();
+
+    if (!/^\d{6}$/.test(code)) {
+      toast("Enter a valid 6-digit room code.");
+      return;
+    }
+
+    try {
+      await ensureAnonymousAuthIfNeeded();
+
+      const roomRef = doc(db, "rooms", code);
+      const roomSnap = await getDoc(roomRef);
+
+      if (!roomSnap.exists()) {
+        toast("Room not found.");
+        return;
+      }
+
+      const room = roomSnap.data();
+      if (room.status !== "waiting") {
+        toast("This room has already started.");
+        return;
+      }
+
+      const playerName = currentUser.displayName || "Player";
+
+      const playerRef = doc(db, "rooms", code, "players", currentUser.uid);
+      const alreadyJoined = (await getDoc(playerRef)).exists();
+      if (!alreadyJoined) {
+        try {
+          await runTransaction(db, async tx => {
+            const latest = await tx.get(roomRef);
+            if (!latest.exists()) throw new Error("Room not found.");
+            const latestRoom = latest.data();
+            if (latestRoom.status !== "waiting") throw new Error("This room has already started.");
+            if ((latestRoom.playerCount ?? 0) >= 4) throw new Error("Room is full (4/4 players).");
+            tx.update(roomRef, { playerCount: (latestRoom.playerCount ?? 0) + 1 });
+            tx.set(playerRef, { uid: currentUser.uid, name: playerName, joinedAt: serverTimestamp() });
+          });
+        } catch (e) { toast(e.message || "Could not join room."); return; }
+      }
+
+      openLobby(code);
+      toast("Room joined!");
+    } catch (err) {
+      toast(firebaseError(err));
+    }
+  }
+
+  $("joinRoomBtn").onclick = joinRoom;
+
+  async function quickPlay() {
+    try {
+      await ensureAnonymousAuthIfNeeded();
+      const roomsQuery = query(
+        collection(db, "rooms"),
+        where("status", "==", "waiting"),
+        where("visibility", "==", "public"),
+        limit(10)
+      );
+      const snap = await getDocs(roomsQuery);
+      const candidates = snap.docs.filter(d => {
+        const r = d.data();
+        return (r.playerCount ?? 0) < 4;
+      });
+
+      if (candidates.length === 0) {
+        const code = generateCode();
+        const ref = doc(db, "rooms", code);
+        const name = currentUser.displayName || "Player";
+        await runTransaction(db, async tx => {
+          const existing = await tx.get(ref);
+          if (existing.exists()) throw new Error("ROOM_RETRY");
+          tx.set(ref, {
+            code, hostUid: currentUser.uid, hostName: name,
+            status: "waiting", visibility: "public", playerCount: 1,
+            createdAt: serverTimestamp()
+          });
+          tx.set(doc(db, "rooms", code, "players", currentUser.uid), {
+            uid: currentUser.uid, name, joinedAt: serverTimestamp()
+          });
+        });
+        openLobby(code);
+        toast("Public room created. Waiting for players…");
+        return;
+      }
+
+      for (const roomDoc of candidates) {
+        const code = roomDoc.id;
+        const roomRef = doc(db, "rooms", code);
+        const playerRef = doc(db, "rooms", code, "players", currentUser.uid);
+        const name = currentUser.displayName || "Player";
+        let joined = false;
+        try {
+          await runTransaction(db, async tx => {
+            const roomSnap = await tx.get(roomRef);
+            if (!roomSnap.exists()) throw new Error("ROOM_CHANGED");
+            const room = roomSnap.data();
+            if (room.status !== "waiting" || (room.playerCount ?? 0) >= 4) throw new Error("ROOM_FULL");
+            tx.update(roomRef, { playerCount: (room.playerCount ?? 0) + 1 });
+            tx.set(playerRef, { uid: currentUser.uid, name, joinedAt: serverTimestamp() });
+          });
+          joined = true;
+        } catch (e) {}
+        if (joined) {
+          openLobby(code);
+          toast("Matched to a public room!");
+          return;
+        }
+      }
+      toast("No room was available. Please try again.");
+    } catch (err) {
+      if (err.message === "ROOM_RETRY") return quickPlay();
+      toast(firebaseError(err));
+    }
+  }
+
+  $("quickPlayBtn").onclick = quickPlay;
+  $("roomCodeInput").addEventListener("input", e => {
+    e.target.value = e.target.value.replace(/\D/g, "");
+  });
+
+  function openLobby(code) {
+    currentRoomCode = code;
+    $("lobby").classList.remove("hidden");
+    $("lobbyCode").textContent = code;
+
+    if (unsubscribePlayers) unsubscribePlayers();
+    watchRoom(code);
+
+    const playersRef = collection(db, "rooms", code, "players");
+    unsubscribePlayers = onSnapshot(playersRef, snapshot => {
+      const players = snapshot.docs.map(d => d.data());
+      const slots = Array.from({length: 4}, (_, i) => players[i] || null);
+      $("playersList").innerHTML = slots.map((p, i) => p ? `
+        <div class="player occupied">
+          <span class="avatar">${(p.name || "P").charAt(0).toUpperCase()}</span>
+          <span><strong>${escapeHtml(p.name || "Player")}</strong>${p.uid === currentUser.uid ? " <small>(You)</small>" : ""}</span>
+          ${i === 0 ? '<b>👑 HOST</b>' : '<b class="joined">READY</b>'}
+        </div>
+      ` : `
+        <div class="player empty-slot">
+          <span class="avatar empty-avatar">+</span>
+          <span>Waiting for player…</span>
+          <b class="open-slot">OPEN</b>
+        </div>
+      `).join("");
+
+      const count = players.length;
+      $("hostText").textContent = `${count} / 4 players joined`;
+      $("playerCountBadge").textContent = `${count}/4 PLAYERS`;
+      $("playerCountBadge").classList.toggle("full", count === 4);
+      const isHost = players[0]?.uid === currentUser.uid;
+      $("startGameBtn").disabled = !isHost || count < 2 || count > 4;
+      $("startGameBtn").textContent = count >= 2 ? `START GAME · ${count} PLAYERS` : "WAITING FOR 2 PLAYERS";
+    });
+  }
+
+  $("copyCodeBtn").onclick = async () => {
+    if (!currentRoomCode) return;
+    try {
+      await navigator.clipboard.writeText(currentRoomCode);
+      toast("Room code copied!");
+    } catch {
+      toast("Room code: " + currentRoomCode);
+    }
+  };
+
+  $("leaveRoomBtn").onclick = leaveRoomAndBack;
+
+  async function leaveCurrentRoom() {
+    if (!currentRoomCode || !currentUser) return;
+    try {
+      const roomRef = doc(db, "rooms", currentRoomCode);
+      const roomSnap = await getDoc(roomRef);
+      const playerRef = doc(db, "rooms", currentRoomCode, "players", currentUser.uid);
+      const playersSnap = await getDocs(collection(db, "rooms", currentRoomCode, "players"));
+      const others = playersSnap.docs.filter(d => d.id !== currentUser.uid).map(d => d.data());
+      if (roomSnap.exists()) {
+        const room = roomSnap.data();
+        if (room.hostUid === currentUser.uid && others.length > 0) {
+          const nextHost = others[0];
+          await updateDoc(roomRef, { hostUid: nextHost.uid, hostName: nextHost.name || "Player", playerCount: others.length });
+        } else if (others.length === 0 && room.status === "waiting") {
+          await deleteDoc(roomRef);
+        } else {
+          await updateDoc(roomRef, { playerCount: Math.max(0, others.length) });
+        }
+      }
+      await deleteDoc(playerRef);
+    } catch {}
+    if (unsubscribePlayers) unsubscribePlayers();
+    if (unsubscribeRoom) unsubscribeRoom();
+    unsubscribePlayers = null;
+    unsubscribeRoom = null;
+    gameState = null;
+    gamePlayers = [];
+    currentRoomCode = null;
+    $("game").classList.add("hidden");
+    $("lobby").classList.add("hidden");
+  }
+
+  async function leaveRoomAndBack() {
+    await leaveCurrentRoom();
+    showPage("dashboardPage");
+  }
+
+  $("startGameBtn").onclick = startGame;
+
+  async function startGame() {
+    if (!currentRoomCode || !currentUser) return;
+    try {
+      const roomSnap = await getDoc(doc(db,"rooms",currentRoomCode));
+      if (!roomSnap.exists() || roomSnap.data().hostUid !== currentUser.uid) { toast("Only the host can start the game."); return; }
+      const ps = (await getDocs(collection(db,"rooms",currentRoomCode,"players"))).docs.map(d=>d.data());
+      if (ps.length < 2) { toast("At least 2 players are needed."); return; }
+      if (ps.length > 4) { toast("Maximum 4 players allowed."); return; }
+      const ordered = ps.sort((a,b)=>(a.joinedAt?.seconds||0)-(b.joinedAt?.seconds||0)).map((p,i)=>({...p,color:COLORS[i],seat:i}));
+      const positions={}; ordered.forEach(p=>positions[p.uid]=[-1,-1,-1,-1]);
+      await updateDoc(doc(db,"rooms",currentRoomCode),{status:"started",players:ordered,game:{turnUid:ordered[0].uid,dice:0,winnerUid:"",winnerName:"",positions,updatedAt:serverTimestamp()}});
+    } catch(err){ toast(firebaseError(err)); }
+  }
+
+  function watchRoom(code){
+    if(unsubscribeRoom) unsubscribeRoom();
+    unsubscribeRoom=onSnapshot(doc(db,"rooms",code),snap=>{
+      if(!snap.exists()) return;
+      const room=snap.data();
+      if(room.status==="started" && room.game){ gamePlayers=room.players||[]; gameState=room.game; showGame(); renderGame(); }
+    });
+  }
+  function showGame(){ $("lobby").classList.add("hidden"); $("game").classList.remove("hidden"); $("gameRoomCode").textContent=currentRoomCode||"------"; }
+  function hideGame(){ $("game").classList.add("hidden"); }
+  function renderGame(){
+    if(!gameState||!currentUser)return;
+    const turn=gamePlayers.find(p=>p.uid===gameState.turnUid);
+    $("turnName").textContent=turn?`${turn.name||"Player"}'s turn`:"Waiting…";
+    $("diceResult").textContent=gameState.dice?`🎲 ${gameState.dice}`:"🎲";
+    $("rollDiceBtn").disabled=gameState.turnUid!==currentUser.uid||gameState.dice!==0||!!gameState.winnerUid;
+    $("gameMessage").textContent=gameState.winnerUid?`🏆 ${gameState.winnerName||"Player"} wins!`:gameState.turnUid===currentUser.uid?(gameState.dice?"Choose a highlighted token.":"Roll the dice."):`Waiting for ${turn?.name||"the next player"}.`;
+    $("gamePlayers").innerHTML=gamePlayers.map(p=>`<div class="game-player ${p.uid===gameState.turnUid?"active":""}"><span class="dot ${escapeHtml(p.color||"red")}"></span><span>${escapeHtml(p.name||"Player")}${p.uid===currentUser.uid?" (You)":""}</span>${p.uid===gameState.turnUid?"<b>TURN</b>":""}</div>`).join("");
+    renderBoard();
+  }
+  function buildBoard(){
+    const b=$("board"); b.innerHTML=""; const map=new Map(PATH.map((x,i)=>[x.join(","),i]));
+    for(let r=0;r<15;r++)for(let c=0;c<15;c++){const el=document.createElement("div");el.className="cell";const idx=map.get(`${r},${c}`);if(idx!==undefined){el.classList.add("track");el.dataset.path=idx;}if(r<6&&c<6)el.classList.add("home-red");if(r<6&&c>8)el.classList.add("home-green");if(r>8&&c<6)el.classList.add("home-yellow");if(r>8&&c>8)el.classList.add("home-blue");if(r>=6&&r<=8&&c>=6&&c<=8)el.classList.add("center");b.appendChild(el);}
+  }
+  function canMove(arr,i,d){const pos=arr[i];return pos===-1?d===6:pos+d<=52;}
+  function renderBoard(){
+    buildBoard(); const positions=gameState.positions||{};
+    gamePlayers.forEach(p=>{(positions[p.uid]||[-1,-1,-1,-1]).forEach((pos,i)=>{if(pos<0||pos>51)return;const global=(STARTS[p.seat]+pos)%52;const cell=$("board").querySelector(`[data-path="${global}"]`);if(!cell)return;const btn=document.createElement("button");btn.className=`token ${p.color}`;btn.textContent=i+1;const movable=p.uid===currentUser.uid&&gameState.turnUid===currentUser.uid&&gameState.dice>0&&canMove(positions[p.uid],i,gameState.dice);if(movable){btn.classList.add("movable");btn.onclick=()=>moveToken(i);}cell.appendChild(btn);});});
+  }
+  function nextTurn(uid){const i=gamePlayers.findIndex(p=>p.uid===uid);return gamePlayers[(i+1)%gamePlayers.length]?.uid||uid;}
+  $("rollDiceBtn").onclick=async()=>{
+    if(!gameState||gameState.turnUid!==currentUser.uid||gameState.dice||gameState.winnerUid)return;
+    try{const d=Math.floor(Math.random()*6)+1;await updateDoc(doc(db,"rooms",currentRoomCode),{"game.dice":d,"game.updatedAt":serverTimestamp()});const arr=gameState.positions?.[currentUser.uid]||[-1,-1,-1,-1];if(!arr.some((_,i)=>canMove(arr,i,d))){pendingMoveTimer=setTimeout(()=>updateDoc(doc(db,"rooms",currentRoomCode),{"game.dice":0,"game.turnUid":d===6?currentUser.uid:nextTurn(currentUser.uid),"game.updatedAt":serverTimestamp()}).catch(()=>{}),700);}}catch(e){toast(firebaseError(e));}
+  };
+  async function moveToken(i){
+    if(!gameState||gameState.turnUid!==currentUser.uid||!gameState.dice)return;
+    const ref=doc(db,"rooms",currentRoomCode);
+    try{await runTransaction(db,async tx=>{const snap=await tx.get(ref);if(!snap.exists())throw Error("Room not found");const g=snap.data().game;if(g.turnUid!==currentUser.uid||!g.dice)throw Error("Not your turn");const ps=JSON.parse(JSON.stringify(g.positions||{}));const mine=ps[currentUser.uid]||[-1,-1,-1,-1];if(!canMove(mine,i,g.dice))throw Error("Invalid move");const d=g.dice;mine[i]=mine[i]===-1?0:mine[i]+d;ps[currentUser.uid]=mine;const me=gamePlayers.find(p=>p.uid===currentUser.uid);let captured=false;if(mine[i]<=51){const landing=(STARTS[me.seat]+mine[i])%52;if(!SAFE.has(landing)){gamePlayers.forEach(p=>{if(p.uid===currentUser.uid)return;const a=ps[p.uid]||[-1,-1,-1,-1];a.forEach((v,j)=>{if(v>=0&&v<=51&&(STARTS[p.seat]+v)%52===landing){a[j]=-1;captured=true;}});ps[p.uid]=a;});}}const won=mine.every(v=>v===52);tx.update(ref,{"game.positions":ps,"game.dice":0,"game.turnUid":won?currentUser.uid:(d===6||captured?currentUser.uid:nextTurn(currentUser.uid)),"game.winnerUid":won?currentUser.uid:(g.winnerUid||""),"game.winnerName":won?(currentUser.displayName||me.name||"Player"):(g.winnerName||""),"game.updatedAt":serverTimestamp()});});}catch(e){if(e.message!=="Invalid move"&&e.message!=="Not your turn")toast(firebaseError(e));}
+  }
+  $("exitGameBtn").onclick=async()=>{if(pendingMoveTimer)clearTimeout(pendingMoveTimer);await leaveCurrentRoom();hideGame();showPage("dashboardPage");};
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+  }
+
+  // Dashboard menu
+  const menuOverlay = $("menuOverlay");
+  const infoModal = $("infoModal");
+  $("menuBtn").onclick = () => menuOverlay.classList.remove("hidden");
+  $("closeMenuBtn").onclick = () => menuOverlay.classList.add("hidden");
+  menuOverlay.addEventListener("click", e => { if (e.target === menuOverlay) menuOverlay.classList.add("hidden"); });
+  $("closeInfoBtn").onclick = () => infoModal.classList.add("hidden");
+  infoModal.addEventListener("click", e => { if (e.target === infoModal) infoModal.classList.add("hidden"); });
+
+  function openInfo(type) {
+    const name = currentUser?.displayName || "Player";
+    const email = currentUser?.email || "Guest account";
+    const code = currentUser?.uid ? currentUser.uid.slice(0,8).toUpperCase() : "RANLUDO";
+    const content = {
+      profile: `<span class="info-icon">👤</span><h2>My Profile</h2><div class="profile-box"><b>${escapeHtml(name)}</b><span>${escapeHtml(email)}</span><small>Player ID: ${escapeHtml(code)}</small></div>`,
+      settings: `<span class="info-icon">⚙️</span><h2>Settings</h2><label class="setting-row"><span>Sound effects</span><input id="soundToggle" type="checkbox" checked></label><label class="setting-row"><span>Confirm token moves</span><input id="confirmToggle" type="checkbox"></label><p class="muted">Settings are saved on this device.</p>`,
+      help: `<span class="info-icon">❓</span><h2>Help & Support</h2><div class="help-list"><p><b>How to play:</b> Create or join a room, wait for 2–4 players, then the host starts the match.</p><p><b>Dice:</b> Roll on your turn. A 6 opens a token from home.</p><p><b>Need help?</b> Check your Firebase configuration and Firestore rules if rooms cannot connect.</p></div>`,
+      referral: `<span class="info-icon">🎁</span><h2>Refer & Earn</h2><p>Invite your friends to play RAN LUDO together.</p><div class="ref-code"><span>Your referral code</span><b>${escapeHtml(code)}</b></div><button id="copyReferralBtn" class="primary full-btn">COPY REFERRAL CODE</button>`,
+      about: `<span class="info-icon">ℹ️</span><h2>About RAN LUDO</h2><p>RAN LUDO is an independent multiplayer Ludo game with private rooms and real-time gameplay.</p><p class="muted">Version 1.1 • Play • Connect • Enjoy</p>`
+    }[type];
+    $("infoContent").innerHTML = content;
+    menuOverlay.classList.add("hidden");
+    infoModal.classList.remove("hidden");
+    if (type === "referral") $("copyReferralBtn").onclick = async () => { try { await navigator.clipboard.writeText(code); toast("Referral code copied!"); } catch { toast("Referral code: " + code); } };
+  }
+  document.querySelectorAll(".menu-item").forEach(btn => btn.onclick = () => openInfo(btn.dataset.menu));
+
+  function firebaseError(err) {
+    const code = err?.code || "";
+    const map = {
+      "auth/email-already-in-use": "This email is already registered.",
+      "auth/invalid-credential": "Incorrect email or password.",
+      "auth/invalid-email": "Enter a valid email.",
+      "auth/weak-password": "Password must be at least 6 characters.",
+      "auth/operation-not-allowed": "Enable Email/Password sign-in in Firebase Authentication.",
+      "auth/admin-restricted-operation": "Enable the required sign-in method in Firebase Authentication.",
+      "permission-denied": "Firestore permission denied. Check the Firestore rules.",
+      "failed-precondition": "Please enable Firestore Database in your Firebase project."
+    };
+    return map[code] || err?.message || "Something went wrong.";
+  }
+</script>
+</body>
+</html>
